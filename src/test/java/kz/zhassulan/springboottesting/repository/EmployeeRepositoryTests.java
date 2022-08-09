@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.math.BigDecimal;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
@@ -20,9 +18,6 @@ public class EmployeeRepositoryTests {
     @DisplayName("JUnit test for save employee operation")
     @Test
     public void givenEmployeeObject_whenSave_thenReturnSavedEmployee() {
-
-        Double d = 1.0;
-        System.out.println(BigDecimal.valueOf(d));
 
         //given - precondition or setup
         Employee employee = Employee.builder()
