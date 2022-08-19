@@ -89,7 +89,7 @@ public class EmployeeRepositoryTests {
     // JUnit test for get employee by email operation
     @Test
     @DisplayName("JUnit test for get employee by email operation")
-    public void givenEmployeeEmail_whenFindByEmail_thenReturnEmail() {
+    public void givenEmployeeEmail_whenFindByEmail_thenReturnEmployee() {
         //given - precondition or setup
         Employee employee = Employee.builder()
                 .firstName("Inju")
@@ -104,6 +104,26 @@ public class EmployeeRepositoryTests {
         //then - verify the output
         assertThat(employeeDB).isNotNull();
         assertThat(employeeDB.getId()).isEqualTo(employee.getId());
+    }
+
+    // JUnit test for update employee operation
+    @Test
+    @DisplayName("JUnit test for update employee operation")
+    public void givenEmployee_whenUpdateEmployee_thenReturnUpdatedEmployee() {
+        //given - precondition or setup
+        Employee employee = Employee.builder()
+                .firstName("Inju")
+                .lastName("Baimanova")
+                .email("inju@gmail.com")
+                .build();
+        employeeRepository.save(employee);
+
+        //when - action or the behaviour that we are going to test
+        Employee savedEmployee = employeeRepository.findById(employee.getId()).get();
+        savedEmployee.setEmail("baimanova@gmail.com");
+
+        //then - verify the output
+        assertThat(employee.getEmail()).isEqualTo("baimanova@gmail.com");
     }
 
 }
