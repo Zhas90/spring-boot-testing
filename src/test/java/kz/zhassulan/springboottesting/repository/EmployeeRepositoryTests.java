@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -124,6 +125,49 @@ public class EmployeeRepositoryTests {
 
         //then - verify the output
         assertThat(employee.getEmail()).isEqualTo("baimanova@gmail.com");
+    }
+
+    // JUnit test for delete Employee operation
+    @Test
+    @DisplayName("JUnit test for delete Employee operation")
+    public void givenEmployee_whenDelete_thenRemovedEmployee() {
+        //given - precondition or setup
+        Employee employee = Employee.builder()
+                .firstName("Asan")
+                .lastName("Asan")
+                .email("asan@gmail.com")
+                .build();
+        employeeRepository.save(employee);
+
+        //when - action or the behaviour that we are going to test
+        employeeRepository.delete(employee);
+        Optional<Employee> employeeOpt = employeeRepository.findById(employee.getId());
+
+        //then - verify the output
+        assertThat(employeeOpt).isEmpty();
+
+    }
+
+    // JUnit test for custom query with JPQL with index
+    @Test
+    @DisplayName("JUnit test for custom query with JPQL with index")
+    public void given_when_then() {
+        //given - precondition or setup
+        Employee employee = Employee.builder()
+                .firstName("Asan")
+                .lastName("Asan")
+                .email("asan@gmail.com")
+                .build();
+        employeeRepository.save(employee);
+        String firstName = "Asan";
+        String lastName = "Asan";
+
+        //when - action or the behaviour that we are going to test
+        Employee savedEmployee = employeeRepository.findByJPQL(firstName, lastName);
+
+        //then - verify the output
+        assertThat(savedEmployee).isNotNull();
+
     }
 
 }
