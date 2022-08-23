@@ -1,6 +1,7 @@
 package kz.zhassulan.springboottesting.repository;
 
 import kz.zhassulan.springboottesting.model.Employee;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,17 +18,21 @@ public class EmployeeRepositoryTests {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    // JUnit test for save employee operation
-    @DisplayName("JUnit test for save employee operation")
-    @Test
-    public void givenEmployeeObject_whenSave_thenReturnSavedEmployee() {
+    private Employee employee;
 
-        //given - precondition or setup
-        Employee employee = Employee.builder()
+    @BeforeEach
+    public void setup() {
+        employee = Employee.builder()
                 .firstName("Asan")
                 .lastName("Asan")
                 .email("asan@gmail.com")
                 .build();
+    }
+
+    // JUnit test for save employee operation
+    @DisplayName("JUnit test for save employee operation")
+    @Test
+    public void givenEmployeeObject_whenSave_thenReturnSavedEmployee() {
 
         //when - action or the behaviour that we are going to test
         Employee savedEmployee = employeeRepository.save(employee);
@@ -35,19 +40,12 @@ public class EmployeeRepositoryTests {
         //then - verify the output
         assertThat(savedEmployee).isNotNull();
         assertThat(savedEmployee.getId()).isGreaterThan(0);
-
     }
 
     // JUnit test for get all employees operation
     @Test
     @DisplayName("JUnit test for get all employees operation")
     public void givenEmployeesList_whenFindAll_thenEmployeesList() {
-        //given - precondition or setup
-        Employee employee = Employee.builder()
-                .firstName("Asan")
-                .lastName("Asan")
-                .email("asan@gmail.com")
-                .build();
 
         Employee employee1 = Employee.builder()
                 .firstName("Jalgas")
@@ -64,7 +62,6 @@ public class EmployeeRepositoryTests {
         //then - verify the output
         assertThat(employeeList).isNotNull();
         assertThat(employeeList.size()).isEqualTo(2);
-
     }
 
     // JUnit test for get employee by id operation
@@ -72,11 +69,6 @@ public class EmployeeRepositoryTests {
     @DisplayName("JUnit test for get employee by id operation")
     public void givenEmployee_whenFindById_thenReturnEmployee() {
         //given - precondition or setup
-        Employee employee = Employee.builder()
-                .firstName("Asan")
-                .lastName("Asan")
-                .email("asan@gmail.com")
-                .build();
         employeeRepository.save(employee);
 
         //when - action or the behaviour that we are going to test
@@ -84,7 +76,6 @@ public class EmployeeRepositoryTests {
 
         //then - verify the output
         assertThat(employeeDB).isNotNull();
-
     }
 
     // JUnit test for get employee by email operation
@@ -92,11 +83,6 @@ public class EmployeeRepositoryTests {
     @DisplayName("JUnit test for get employee by email operation")
     public void givenEmployeeEmail_whenFindByEmail_thenReturnEmployee() {
         //given - precondition or setup
-        Employee employee = Employee.builder()
-                .firstName("Inju")
-                .lastName("Baimanova")
-                .email("inju@gmail.com")
-                .build();
         employeeRepository.save(employee);
 
         //when - action or the behaviour that we are going to test
@@ -112,11 +98,6 @@ public class EmployeeRepositoryTests {
     @DisplayName("JUnit test for update employee operation")
     public void givenEmployee_whenUpdateEmployee_thenReturnUpdatedEmployee() {
         //given - precondition or setup
-        Employee employee = Employee.builder()
-                .firstName("Inju")
-                .lastName("Baimanova")
-                .email("inju@gmail.com")
-                .build();
         employeeRepository.save(employee);
 
         //when - action or the behaviour that we are going to test
@@ -132,11 +113,6 @@ public class EmployeeRepositoryTests {
     @DisplayName("JUnit test for delete Employee operation")
     public void givenEmployee_whenDelete_thenRemovedEmployee() {
         //given - precondition or setup
-        Employee employee = Employee.builder()
-                .firstName("Asan")
-                .lastName("Asan")
-                .email("asan@gmail.com")
-                .build();
         employeeRepository.save(employee);
 
         //when - action or the behaviour that we are going to test
@@ -145,19 +121,13 @@ public class EmployeeRepositoryTests {
 
         //then - verify the output
         assertThat(employeeOpt).isEmpty();
-
     }
 
     // JUnit test for custom query with JPQL with index
     @Test
     @DisplayName("JUnit test for custom query with JPQL with index")
-    public void given_when_then() {
+    public void givenFirstNameAndLastName_whenFindByJPQL_thenReturnEmployee() {
         //given - precondition or setup
-        Employee employee = Employee.builder()
-                .firstName("Asan")
-                .lastName("Asan")
-                .email("asan@gmail.com")
-                .build();
         employeeRepository.save(employee);
         String firstName = "Asan";
         String lastName = "Asan";
@@ -167,7 +137,22 @@ public class EmployeeRepositoryTests {
 
         //then - verify the output
         assertThat(savedEmployee).isNotNull();
+    }
 
+    // JUnit test for custom query with JPQL with named params
+    @Test
+    @DisplayName("JUnit test for custom query with JPQL with named params")
+    public void givenFirstnameAndLastname_whenFindByJPQLNamedParams_thenReturnEmployee() {
+        //given - precondition or setup
+        employeeRepository.save(employee);
+        String firstName = "Asan";
+        String lastName = "Asan";
+
+        //when - action or the behaviour that we are going to test
+        Employee savedEmployee = employeeRepository.findByJPQLNamedParams(firstName, lastName);
+
+        //then - verify the output
+        assertThat(savedEmployee).isNotNull();
     }
 
 }
