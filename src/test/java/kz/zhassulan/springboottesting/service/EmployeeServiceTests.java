@@ -13,6 +13,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -77,6 +79,39 @@ public class EmployeeServiceTests {
 
         // then
         verify(employeeRepository, never()).save(any(Employee.class));
+    }
+
+    @Test
+    @DisplayName("JUnit test for getEmployees method")
+    public void givenEmployeesList_whenGetAllEmployees_thenEmployeesList() {
+        // given - precondition or setup
+        Employee employee1 = Employee.builder()
+                .id(2L)
+                .firstName("Nurlan")
+                .lastName("Beast")
+                .email("nurlan@gmail.com")
+                .build();
+        given(employeeRepository.findAll()).willReturn(List.of(employee, employee1));
+
+        // when - action or the behaviour that we are going to test
+        List<Employee> employeeList = employeeService.getAllEmployees();
+
+        // then
+        Assertions.assertThat(employeeList).isNotNull();
+        Assertions.assertThat(employeeList.size()).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("JUnit test for getEmployees method (negative scenario)")
+    public void givenEmptyEmployeesList_whenGetAllEmployees_thenEmptyEmployeesList() {
+        // given - precondition or setup
+        given(employeeRepository.findAll()).willReturn(Collections.emptyList());
+
+        // when - action or the behaviour that we are going to test
+        List<Employee> employeeList = employeeService.getAllEmployees();
+
+        // then
+        Assertions.assertThat(employeeList).isEmpty();
     }
 
 }
