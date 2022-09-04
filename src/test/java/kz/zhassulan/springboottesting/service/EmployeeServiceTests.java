@@ -4,7 +4,6 @@ import kz.zhassulan.springboottesting.exception.ResourceNotFoundException;
 import kz.zhassulan.springboottesting.model.Employee;
 import kz.zhassulan.springboottesting.repository.EmployeeRepository;
 import kz.zhassulan.springboottesting.service.impl.EmployeeServiceImpl;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
@@ -61,7 +61,7 @@ public class EmployeeServiceTests {
         System.out.println(savedEmployee);
 
         //then - verify the output
-        Assertions.assertThat(savedEmployee).isNotNull();
+        assertThat(savedEmployee).isNotNull();
     }
 
     @Test
@@ -97,8 +97,8 @@ public class EmployeeServiceTests {
         List<Employee> employeeList = employeeService.getAllEmployees();
 
         // then
-        Assertions.assertThat(employeeList).isNotNull();
-        Assertions.assertThat(employeeList.size()).isEqualTo(2);
+        assertThat(employeeList).isNotNull();
+        assertThat(employeeList.size()).isEqualTo(2);
     }
 
     @Test
@@ -111,7 +111,20 @@ public class EmployeeServiceTests {
         List<Employee> employeeList = employeeService.getAllEmployees();
 
         // then
-        Assertions.assertThat(employeeList).isEmpty();
+        assertThat(employeeList).isEmpty();
+    }
+
+    @Test
+    @DisplayName("JUnit test for getEmployeeById method")
+    public void givenEmployeeId_whenGetEmployeeById_thenReturnEmployee() {
+        //given - precondition or setup
+        given(employeeRepository.findById(1L)).willReturn(Optional.of(employee));
+
+        //when - action or the behaviour that we are going to test
+        Employee fetchedEmployee = employeeService.getEmployeeById(employee.getId()).get();
+
+        //then - verify the output
+        assertThat(fetchedEmployee).isNotNull();
     }
 
 }
