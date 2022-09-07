@@ -17,6 +17,11 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @WebMvcTest
@@ -40,7 +45,7 @@ public class EmployeeControllerTests {
                 .lastName("Usen")
                 .email("asan@gmail.com")
                 .build();
-        BDDMockito.given(employeeService.saveEmployee(ArgumentMatchers.any(Employee.class)))
+        given(employeeService.saveEmployee(ArgumentMatchers.any(Employee.class)))
                 .willAnswer((invocation) -> invocation.getArgument(0));
 
         //when - action or the behaviour that we are going to test
@@ -57,6 +62,25 @@ public class EmployeeControllerTests {
                         CoreMatchers.is(employee.getLastName())))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.email",
                         CoreMatchers.is(employee.getEmail())));
-
     }
+
+    @Test
+    @DisplayName("JUnit test for getAllEmployees REST API")
+    public void givenListOfEmployees_whenGetAllEmployees_thenReturnEmployeesList() throws Exception {
+        //given - precondition or setup
+        List<Employee> listOfEmployees = new ArrayList<>();
+        listOfEmployees.add(Employee.builder().firstName("Inju").lastName("Baimanova").email("inju@gmail.com").build());
+        listOfEmployees.add(Employee.builder().firstName("Diar").lastName("Sanat").email("diar@gmail.com").build());
+
+        given(employeeService.getAllEmployees()).willReturn(listOfEmployees);
+
+        //when - action or the behaviour that we are going to test
+        ResultActions response = mockMvc.perform(get("/api/employees"));
+
+        //then - verify the output
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.size()", CoreMatchers.is(listOfEmployees.size())));
+    }
+
 }
