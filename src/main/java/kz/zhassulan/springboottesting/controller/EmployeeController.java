@@ -36,4 +36,18 @@ public class EmployeeController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @PutMapping("{id}")
+    public ResponseEntity<Employee> updateEmployee(@PathVariable("id") long employeeId,
+                                                   @RequestBody Employee employee) {
+        return employeeService.getEmployeeById(employeeId)
+                .map(employeeFromDb -> {
+                    employeeFromDb.setFirstName(employee.getFirstName());
+                    employeeFromDb.setLastName(employee.getLastName());
+                    employeeFromDb.setEmail(employee.getEmail());
+
+                    Employee savedEmployee = employeeService.updateEmployee(employeeFromDb);
+                    return new ResponseEntity<>(savedEmployee, HttpStatus.OK);
+                }).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
 }
