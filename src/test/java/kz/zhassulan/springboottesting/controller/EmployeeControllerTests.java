@@ -107,4 +107,19 @@ public class EmployeeControllerTests {
                 .andExpect(jsonPath("$.lastName", is(employee.getLastName())));
     }
 
+    @Test
+    @DisplayName("JUnit test for getEmployeeById REST API, negative scenario")
+    public void givenEmployeeId_whenGetEmployeeById_thenReturnEmpty() throws Exception {
+        //given - precondition or setup
+        long employeeId = 1L;
+        given(employeeService.getEmployeeById(employeeId)).willReturn(Optional.empty());
+
+        //when - action or the behaviour that we are going to test
+        ResultActions response = mockMvc.perform(get("/api/employees/{id}", employeeId));
+
+        //then - verify the output
+        response.andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
 }
