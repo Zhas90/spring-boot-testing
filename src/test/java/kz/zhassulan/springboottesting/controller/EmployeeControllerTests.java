@@ -154,4 +154,34 @@ public class EmployeeControllerTests {
                 .andExpect(jsonPath("$.lastName", is(updatedEmployee.getLastName())));
     }
 
+    @Test
+    @DisplayName("JUnit test for updateEmployee REST API, negative scenario")
+    public void givenUpdatedEmployee_whenUpdateEmployee_thenReturn404() throws Exception {
+        //given - precondition or setup
+        long employeeId = 1L;
+        Employee savedEmployee = Employee.builder()
+                .firstName("Asan")
+                .lastName("Usen")
+                .email("asan@gmail.com")
+                .build();
+        Employee updatedEmployee = Employee.builder()
+                .firstName("Asanbek")
+                .lastName("Usenbek")
+                .email("asanbek@gmail.com")
+                .build();
+
+        given(employeeService.getEmployeeById(employeeId)).willReturn(Optional.empty());
+        given(employeeService.updateEmployee(any(Employee.class)))
+                .willAnswer((invocation) -> invocation.getArgument(0));
+
+        //when - action or the behaviour that we are going to test
+        ResultActions response = mockMvc.perform(put("/api/employees/{id}", employeeId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(updatedEmployee)));
+
+        //then - verify the output
+        response.andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
 }
