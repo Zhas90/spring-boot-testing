@@ -19,6 +19,7 @@ import java.util.Optional;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -159,11 +160,6 @@ public class EmployeeControllerTests {
     public void givenUpdatedEmployee_whenUpdateEmployee_thenReturn404() throws Exception {
         //given - precondition or setup
         long employeeId = 1L;
-        Employee savedEmployee = Employee.builder()
-                .firstName("Asan")
-                .lastName("Usen")
-                .email("asan@gmail.com")
-                .build();
         Employee updatedEmployee = Employee.builder()
                 .firstName("Asanbek")
                 .lastName("Usenbek")
@@ -181,6 +177,21 @@ public class EmployeeControllerTests {
 
         //then - verify the output
         response.andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("JUnit test for delete employee REST API")
+    public void givenEmployeeId_whenDeleteEmployee_thenReturn200() throws Exception {
+        //given - precondition or setup
+        long employeeId = 1L;
+        willDoNothing().given(employeeService).deleteEmployee(employeeId);
+
+        //when - action or the behaviour that we are going to test
+        ResultActions response = mockMvc.perform(delete("/api/employees/{id}", employeeId));
+
+        //then - verify the output
+        response.andExpect(status().isOk())
                 .andDo(print());
     }
 
