@@ -13,7 +13,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.hamcrest.CoreMatchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -61,6 +65,24 @@ public class EmployeeControllerITests {
                         is(employee.getLastName())))
                 .andExpect(jsonPath("$.email",
                         is(employee.getEmail())));
+    }
+
+    @Test
+    @DisplayName("Integration test for getAllEmployees REST API")
+    public void givenListOfEmployees_whenGetAllEmployees_thenReturnEmployeesList() throws Exception {
+        //given - precondition or setup
+        List<Employee> listOfEmployees = new ArrayList<>();
+        listOfEmployees.add(Employee.builder().firstName("Inju").lastName("Baimanova").email("inju@gmail.com").build());
+        listOfEmployees.add(Employee.builder().firstName("Diar").lastName("Sanat").email("diar@gmail.com").build());
+        employeeRepository.saveAll(listOfEmployees);
+
+        //when - action or the behaviour that we are going to test
+        ResultActions response = mockMvc.perform(get("/api/employees"));
+
+        //then - verify the output
+        response.andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$.size()", is(listOfEmployees.size())));
     }
 
 }
