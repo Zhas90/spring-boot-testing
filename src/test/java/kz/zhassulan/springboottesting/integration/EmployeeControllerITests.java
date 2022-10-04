@@ -15,12 +15,9 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -117,6 +114,57 @@ public class EmployeeControllerITests {
 
         //when - action or the behaviour that we are going to test
         ResultActions response = mockMvc.perform(get("/api/employees/{id}", employeeId));
+
+        //then - verify the output
+        response.andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("Integration test for updateEmployee REST API, positive scenario")
+    public void givenUpdatedEmployee_whenUpdateEmployee_thenReturnUpdatedEmployeeObject() throws Exception {
+        //given - precondition or setup
+        Employee savedEmployee = Employee.builder()
+                .firstName("Asan")
+                .lastName("Usen")
+                .email("asan@gmail.com")
+                .build();
+        employeeRepository.save(savedEmployee);
+
+        Employee updatedEmployee = Employee.builder()
+                .firstName("Asanbek")
+                .lastName("Usenbek")
+                .email("asanbek@gmail.com")
+                .build();
+
+        //when - action or the behaviour that we are going to test
+        ResultActions response = mockMvc.perform(put("/api/employees/{id}", savedEmployee.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(updatedEmployee)));
+
+        //then - verify the output
+        response.andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$.email", is(updatedEmployee.getEmail())))
+                .andExpect(jsonPath("$.firstName", is(updatedEmployee.getFirstName())))
+                .andExpect(jsonPath("$.lastName", is(updatedEmployee.getLastName())));
+    }
+
+    @Test
+    @DisplayName("Integration test for updateEmployee REST API, negative scenario")
+    public void givenUpdatedEmployee_whenUpdateEmployee_thenReturn404() throws Exception {
+        //given - precondition or setup
+        long employeeId = -1L;
+        Employee updatedEmployee = Employee.builder()
+                .firstName("Asanbek")
+                .lastName("Usenbek")
+                .email("asanbek@gmail.com")
+                .build();
+
+        //when - action or the behaviour that we are going to test
+        ResultActions response = mockMvc.perform(put("/api/employees/{id}", employeeId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(updatedEmployee)));
 
         //then - verify the output
         response.andExpect(status().isNotFound())
