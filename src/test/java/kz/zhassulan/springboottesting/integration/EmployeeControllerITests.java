@@ -171,4 +171,23 @@ public class EmployeeControllerITests {
                 .andDo(print());
     }
 
+    @Test
+    @DisplayName("Integration test for delete employee REST API")
+    public void givenEmployeeId_whenDeleteEmployee_thenReturn200() throws Exception {
+        //given - precondition or setup
+        Employee savedEmployee = Employee.builder()
+                .firstName("Asan")
+                .lastName("Usen")
+                .email("asan@gmail.com")
+                .build();
+        employeeRepository.save(savedEmployee);
+
+        //when - action or the behaviour that we are going to test
+        ResultActions response = mockMvc.perform(delete("/api/employees/{id}", savedEmployee.getId()));
+
+        //then - verify the output
+        response.andExpect(status().isOk())
+                .andDo(print());
+    }
+
 }
