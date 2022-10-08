@@ -1,5 +1,6 @@
 package kz.zhassulan.springboottesting.repository;
 
+import kz.zhassulan.springboottesting.integration.AbstractContainerBaseTest;
 import kz.zhassulan.springboottesting.model.Employee;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class EmployeeRepositoryIT {
+public class EmployeeRepositoryIT extends AbstractContainerBaseTest {
 
     @Autowired
     private EmployeeRepository employeeRepository;

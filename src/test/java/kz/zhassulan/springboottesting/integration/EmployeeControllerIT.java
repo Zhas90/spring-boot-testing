@@ -12,9 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,14 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-@Testcontainers
-public class EmployeeControllerIT {
-
-    @Container
-    private static final MySQLContainer mySQLContainer = new MySQLContainer("mysql:latest")
-            .withUsername("ninebot")
-            .withPassword("password")
-            .withDatabaseName("ems");
+public class EmployeeControllerIT extends AbstractContainerBaseTest {
 
     @Autowired
     private EmployeeRepository employeeRepository;
@@ -53,11 +43,6 @@ public class EmployeeControllerIT {
     @Test
     @DisplayName("Integration test for createEmployee rest api")
     public void givenEmployee_whenCreateEmployee_thenReturnSavedEmployee() throws Exception {
-        System.out.println(mySQLContainer.getUsername());
-        System.out.println(mySQLContainer.getPassword());
-        System.out.println(mySQLContainer.getDatabaseName());
-        System.out.println(mySQLContainer.getJdbcUrl());
-
         //given - precondition or setup
         Employee employee = Employee.builder()
                 .firstName("Asan")
