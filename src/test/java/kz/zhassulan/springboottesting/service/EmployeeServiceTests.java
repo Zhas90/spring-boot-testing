@@ -52,13 +52,8 @@ public class EmployeeServiceTests {
 
         given(employeeRepository.save(employee)).willReturn(employee);
 
-        System.out.println(employeeRepository);
-        System.out.println(employeeService);
-
         //when - action or the behaviour that we are going to test
         Employee savedEmployee = employeeService.saveEmployee(employee);
-
-        System.out.println(savedEmployee);
 
         //then - verify the output
         assertThat(savedEmployee).isNotNull();
@@ -70,9 +65,6 @@ public class EmployeeServiceTests {
         // given - precondition or setup
         given(employeeRepository.findByEmail(employee.getEmail()))
                 .willReturn(Optional.of(employee));
-
-        System.out.println(employeeRepository);
-        System.out.println(employeeService);
 
         // when - action or the behaviour that we are going to test
         org.junit.jupiter.api.Assertions.assertThrows(ResourceNotFoundException.class, () -> employeeService.saveEmployee(employee));
